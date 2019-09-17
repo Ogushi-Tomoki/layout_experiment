@@ -184,7 +184,7 @@ var WomenNameList = [
     "すぎた じゅんこ",
     "みずかみ ゆうこ",
     "いいづか かずみ",
-    "もちづき かな",
+    "はら けいこ",
     "あきもと みき",
     "よしかわ なおこ",
     "やまざき のぞみ",
@@ -213,6 +213,19 @@ var WomenNameList = [
     "こやま なな"
 ];
 
+var sameNameList = [
+    "ひかる",
+    "ようすけ",
+    "たく",
+    "まさし",
+    "とおる",
+    "さゆり",
+    "ゆき",
+    "あさみ",
+    "みなみ",
+    "みどり"
+];
+
 var rbt = null;
 for(var i = 0; i < MenNameList.length; i++){
     var str = MenNameList[i];
@@ -228,7 +241,22 @@ for(var i = 0; i < WomenNameList.length; i++){
 
     rbt = insert(rbt, match[0], match[1]);
 }
+
+//ランダムに同じ苗字の人を1人生成する
+var MenOrWomenList = null;
+if(Math.floor(Math.random() * 2) == 0){
+    MenOrWomenList = MenNameList;
+} else {
+    MenOrWomenList = WomenNameList;
+}
+var str0 = MenOrWomenList[Math.floor(Math.random() * 30)];
+var re0 = /[^\s]+/g;
+var match0 = str0.match(re);
+var str1 = sameNameList[Math.floor(Math.random() * 10)];
+rbt = insert(rbt, match0[0], str1);
+
 insertNullatAllNode(rbt);
 
 MenNameList.length = 0;
 WomenNameList.length = 0;
+sameNameList.length = 0;

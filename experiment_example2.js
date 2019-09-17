@@ -98,7 +98,7 @@ while(randomlength) {
 }
 
 var trie = new Node("c");
-for(var i = 0; i < 10; i++){
+for(var i = 0; i < 6; i++){
     trie.add(RandomWords[i]);
 }
 

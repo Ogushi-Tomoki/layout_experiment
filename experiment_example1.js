@@ -146,117 +146,94 @@ function insertNullatAllNode(tree) {
     }
 }
 
-//https://namegen.jp/から、男性の名前30人分と女性の名前30人分をランダムに生成
+//https://namegen.jp/から、苗字60人分をランダムに生成
+var FamilyNameList = [
+    "あおやま", "あきもと",　"あべ", 
+    "いいづか", "いしまる", "いのうえ", 
+    "いわさき", "いわもと", "うえだ", 
+    "うちやま", "おおいし", "おおうち", 
+    "おおしま", "おおにし", "おがた", 
+    "おさだ", "おのでら", "かしわぎ", 
+    "かみむら", "かみや", "かめい", 
+    "かわさき", "かわしま", "かわはら", 
+    "きむ", "きんじょう", "くどう", 
+    "くぼ", "こやま", "ごとう", 
+    "しまだ", "しみず", "すぎた", 
+    "つつみ", "ないとう", "ながい", 
+    "ながた", "にしかわ", "にしだ", 
+    "のぐち", "はら", "ひぐち", 
+    "ふくなが", "ふじの", "ふるや", 
+    "まつむら", "まつもと", "みずかみ", 
+    "みなみ", "みやた", "むらやま", 
+    "もちづき", "やなぎ", "やまかわ", 
+    "やまざき", "よしい", "よしかわ", 
+    "よしざわ", "よしなが", "わたなべ"
+];
+
+//https://namegen.jp/から、男性の名前33人分をランダムに生成
 var MenNameList = [
-    "いのうえ きよし",
-    "まつもと ひでゆき",
-    "くぼ たくや",
-    "しみず さとし",
-    "かみや だいすけ",
-    "みなみ たけし",
-    "かわさき つかさ",
-    "ながい まさあき",
-    "にしだ しげき",
-    "ふくなが けんたろう",
-    "ながた だいき",
-    "もちづき しんや",
-    "かめい ひでき",
-    "いわさき たかゆき",
-    "ふるや けんいち",
-    "くどう かずお",
-    "まつむら たくや",
-    "むらやま よういち",
-    "よしざわ りょうた",
-    "よしい けんじ",
-    "あおやま しんご",
-    "おおにし けいすけ",
-    "にしかわ やすお",
-    "おおしま なおゆき",
-    "おおいし じゅんいち",
-    "おさだ じゅんいち",
-    "うちやま あきひこ",
-    "ないとう たつろう",
-    "やまかわ しんたろう",
-    "ふじの ゆたか"
+    "あきひこ", "かずお", "きよし", 
+    "けいすけ", "けんいち", "けんじ", 
+    "けんたろう", "さとし", "しげき", 
+    "じゅんいち", "しんご", "しんたろう", 
+    "しんや", "だいき", "だいすけ", 
+    "たかゆき", "たく", "たくや", 
+    "たけし", "たつろう", "つかさ", 
+    "とおる", "なおあき", "ひかる", 
+    "ひでき", "ひでゆき", "まさあき", 
+    "まさし", "やすお", "ゆたか", 
+    "よういち", "ようすけ", "りょうた"
 ];
 
+//https://namegen.jp/から、女性の名前33人分をランダムに生成
 var WomenNameList = [
-    "すぎた じゅんこ",
-    "みずかみ ゆうこ",
-    "いいづか かずみ",
-    "はら けいこ",
-    "あきもと みき",
-    "よしかわ なおこ",
-    "やまざき のぞみ",
-    "つつみ しほ",
-    "おおうち あやの",
-    "かしわぎ れいこ",
-    "よしなが あやか",
-    "しまだ りな",
-    "あべ まりな",
-    "ごとう えりか",
-    "かわしま さちこ",
-    "のぐち みき",
-    "やなぎ ゆか",
-    "かわはら ひろこ",
-    "きむ みのり",
-    "いわもと むつみ",
-    "おのでら あや",
-    "かみむら ゆい",
-    "きんじょう かなこ",
-    "みやた さき",
-    "わたなべ みゆき",
-    "うえだ あやこ",
-    "おがた ちあき",
-    "ひぐち みや",
-    "いしまる あすか",
-    "こやま なな"
+    "あさみ", "あすか", "あや", 
+    "あやか", "あやこ", "あやの", 
+    "えりか", "かずみ", "かなこ", 
+    "けいこ", "さき", "さちこ", 
+    "さゆり", "しほ", "じゅんこ", 
+    "ちあき", "なおこ", "なな", 
+    "のぞみ", "ひろこ", "まりな", 
+    "みき", "みどり", "みなみ", 
+    "みのり", "みや", "みゆき", 
+    "むつみ", "ゆい", "ゆうこ", 
+    "ゆか", "りな", "れいこ"
 ];
 
-var sameNameList = [
-    "ひかる",
-    "ようすけ",
-    "たく",
-    "まさし",
-    "とおる",
-    "さゆり",
-    "ゆき",
-    "あさみ",
-    "みなみ",
-    "みどり"
-];
-
-var rbt = null;
-for(var i = 0; i < MenNameList.length; i++){
-    var str = MenNameList[i];
-    var re = /[^\s]+/g;
-    var match = str.match(re);
-
-    rbt = insert(rbt, match[0], match[1]);
+//filter-yates shuffleアルゴリズムを利用して配列をシャッフルする関数
+function shuffleArray(array){
+    var randomlength = array.length;
+    while(randomlength){
+        var j = Math.floor(Math.random() * randomlength);
+        var t = array[--randomlength];
+        array[randomlength] = array[j];
+        array[j] = t;
+    }
 }
-for(var i = 0; i < WomenNameList.length; i++){
-    var str = WomenNameList[i];
-    var re = /[^\s]+/g;
-    var match = str.match(re);
 
-    rbt = insert(rbt, match[0], match[1]);
+shuffleArray(FamilyNameList);
+shuffleArray(MenNameList);
+shuffleArray(WomenNameList);
+
+//人名をツリーに入れていく
+var rbt = null;
+for(var i = 0; i < FamilyNameList.length; i++){
+    if(i < FamilyNameList.length / 2){
+        rbt = insert(rbt, FamilyNameList[i], MenNameList[i]);
+    } else {
+        rbt = insert(rbt, FamilyNameList[i], WomenNameList[i - FamilyNameList.length / 2]);
+    }
 }
 
 //ランダムに同じ苗字の人を1人生成する
-var MenOrWomenList = null;
 if(Math.floor(Math.random() * 2) == 0){
-    MenOrWomenList = MenNameList;
+    rbt = insert(rbt, FamilyNameList[Math.floor(Math.random() * FamilyNameList.length)], MenNameList[FamilyNameList.length / 2]);
 } else {
-    MenOrWomenList = WomenNameList;
+    rbt = insert(rbt, FamilyNameList[Math.floor(Math.random() * FamilyNameList.length)], WomenNameList[FamilyNameList.length / 2]);
 }
-var str0 = MenOrWomenList[Math.floor(Math.random() * 30)];
-var re0 = /[^\s]+/g;
-var match0 = str0.match(re);
-var str1 = sameNameList[Math.floor(Math.random() * 10)];
-rbt = insert(rbt, match0[0], str1);
 
 insertNullatAllNode(rbt);
 
 MenNameList.length = 0;
 WomenNameList.length = 0;
-sameNameList.length = 0;
+FamilyNameList.length = 0;

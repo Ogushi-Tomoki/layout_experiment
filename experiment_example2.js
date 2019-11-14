@@ -97,8 +97,8 @@ while(randomlength) {
     RandomWords[j] = t;
 }
 
-var trie = new Node("c");
-for(var i = 0; i < 6; i++){
+var trie = new Node(RandomWords[0].slice(0, 1));
+for(var i = 0; i < 5; i++){
     trie.add(RandomWords[i]);
 }
 

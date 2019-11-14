@@ -1,7 +1,6 @@
 class Store {
-    constructor(name, adress){
+    constructor(name){
         this.name = name;
-        this.adress = adress;
         this.next = null;
         this.prev = null;
         this.goods = null;
@@ -23,8 +22,8 @@ class Store {
     }
 }
 
-function addStore(store, name, adress){
-    var newstore = new Store(name, adress);
+function addStore(store, name){
+    var newstore = new Store(name);
     if(store == null){
         return newstore;
     } else if(store.name < newstore.name){
@@ -41,7 +40,7 @@ function addStore(store, name, adress){
                 newstore.prev = store;
                 return store;
             } else {
-                store.next = addStore(store.next, name, adress);
+                store.next = addStore(store.next, name);
                 return store;
             }
         }
@@ -59,7 +58,7 @@ function addStore(store, name, adress){
                 newstore.next = store;
                 return temp;
             } else {
-                return addStore(store.prev, name, adress);
+                return addStore(store.prev, name);
             }              
         }
     }
@@ -198,79 +197,82 @@ function insertNullatAllNode(tree) {
     }
 }
 
+/*Goodsを木に挿入する関数
+ store：Goodsを挿入するStoreオブジェクト
+ storename：Storeの名前
+ storenumber：店の基本番号（商品番号に反映される）
+ randnumber：乱数の基底
+ correct：正しい順番で挿入するかどうか
+ */
+function CorrectInsertGoods(store, storename, storenumber, randnumber, correct){
+    var insertOrder = new Array();
+    if(correct){
+        insertOrder = [1,4,5,2,7,8,3,6];
+    } else {
+        var sw = Math.floor(Math.random() * 4);
+        if(sw == 0){
+            insertOrder = [2,7,8,6,4,1,5,3];
+        } else if(sw == 1){
+            insertOrder = [6,7,8,2,1,3,4,5];
+        } else if(sw == 2){
+            insertOrder = [1,2,7,8,3,4,5,6];
+        } else if(sw == 3){
+            insertOrder = [1,2,7,6,8,4,3,5];
+        }
+    }
+    for(var i = 0; i < 8; i++){
+        addGoods(store, storename, storenumber * 100 + randnumber * insertOrder[i] + Math.floor(Math.random() * randnumber), Math.ceil(Math.random() * 10) * 108);
+    }
+}
+
+//filter-yates shuffleアルゴリズムを利用して配列をシャッフルする関数
+function shuffleArray(array){
+    var randomlength = array.length;
+    while(randomlength){
+        var j = Math.floor(Math.random() * randomlength);
+        var t = array[--randomlength];
+        array[randomlength] = array[j];
+        array[j] = t;
+    }
+}
+
+var TestNodeNumber = 4;
+
+var StoreNameList = [
+    "Ikebukuro",
+    "Takadanobaba",
+    "Shinjuku",
+    "Harajuku",
+    "Shibuya",
+    "Osaki",
+    "Shinagawa",
+    "Tokyo",
+    "Akihabara",
+    "Ueno",
+    "Nippori"
+];
+
+shuffleArray(StoreNameList);
+
 var str = null;
-str = addStore(str, "Shinjuku", "shinjuku");
-str = addStore(str, "Shibuya1", "shibuya");
-str = addStore(str, "Shibuya2", "shibuya");
-str = addStore(str, "Takadanobaba", "takadanobaba");
-str = addStore(str, "Ikebukuro", "ikebukuro");
+for(var i = 0; i < TestNodeNumber; i++){
+    str = addStore(str, StoreNameList[i]);
+}
 
-var IkebukuroGoods = [
-    1001, 500,
-    1002, 500,
-    1003, 500,
-    1004, 500,
-    1005, 500,
-    1006, 500,
-    1007, 500,
-    1008, 500
-];
+var storenumberArray = [1,2,3,4,5,6,7,8,9];
+shuffleArray(storenumberArray);
 
-var Shibuya1Goods = [
-    1301, 500,
-    1304, 500,
-    1305, 500,
-    1302, 500,
-    1307, 500,
-    1308, 500,
-    1303, 500,
-    1306, 500
-];
+var uncorrectnumber = Math.floor(Math.random() * TestNodeNumber);
 
-var Shibuya2Goods = [
-    1401, 500,
-    1404, 500,
-    1405, 500,
-    1407, 500,
-    1408, 500,
-    1402, 500,
-    1406, 500,
-    1403, 500
-];
-
-var ShinjukuGoods = [
-    2002, 500,
-    2007, 500,
-    2008, 500,
-    2006, 500,
-    2004, 500,
-    2001, 500,
-    2005, 500,
-    2003, 500
-];
-
-var TakadanobabaGoods = [
-    2202, 500,
-    2205, 500,
-    2206, 500,
-    2208, 500,
-    2209, 500,
-    2203, 500,
-    2207, 500,
-    2204, 500
-];
-
-for(var i = 0; i < 8; i++){
-    addGoods(str, "Shinjuku", ShinjukuGoods[2 * i], ShinjukuGoods[2 * i + 1]);
-    addGoods(str, "Shibuya1", Shibuya1Goods[2 * i], Shibuya1Goods[2 * i + 1]);
-    addGoods(str, "Shibuya2", Shibuya2Goods[2 * i], Shibuya2Goods[2 * i + 1]);
-    addGoods(str, "Takadanobaba", TakadanobabaGoods[2 * i], TakadanobabaGoods[2 * i + 1]);
-    addGoods(str, "Ikebukuro", IkebukuroGoods[2 * i], IkebukuroGoods[2 * i + 1]);
+for(var i = 0; i < TestNodeNumber; i++){
+    var bool = i != uncorrectnumber;
+    CorrectInsertGoods(str, StoreNameList[i], storenumberArray[i], 10, bool);
+    
 }
 
 str.insertNULL();
-IkebukuroGoods.length = 0;      //計算量を軽くするため（無意味？）
-Shibuya1Goods.length = 0;
-Shibuya2Goods.length = 0;
-TakadanobabaGoods.length = 0;
-IkebukuroGoods.length = 0;
+// IkebukuroGoods.length = 0;      //計算量を軽くするため（無意味？）
+// Shibuya1Goods.length = 0;
+// Shibuya2Goods.length = 0;
+// TakadanobabaGoods.length = 0;
+// IkebukuroGoods.length = 0;

@@ -215,23 +215,21 @@ shuffleArray(FamilyNameList);
 shuffleArray(MenNameList);
 shuffleArray(WomenNameList);
 
-var nodeNumber = 25;        //画面に表示させるノード数
-
 //人名をツリーに入れていく
 var rbt = null;
-for(var i = 0; i < nodeNumber; i++){
-    if(i < nodeNumber / 2){
+for(var i = 0; i < FamilyNameList.length; i++){
+    if(i < FamilyNameList.length / 2){
         rbt = insert(rbt, FamilyNameList[i], MenNameList[i]);
     } else {
-        rbt = insert(rbt, FamilyNameList[i], WomenNameList[i - nodeNumber / 2]);
+        rbt = insert(rbt, FamilyNameList[i], WomenNameList[i - FamilyNameList.length / 2]);
     }
 }
 
 //ランダムに同じ苗字の人を1人生成する
 if(Math.floor(Math.random() * 2) == 0){
-    rbt = insert(rbt, FamilyNameList[Math.floor(Math.random() * nodeNumber)], MenNameList[nodeNumber / 2]);
+    rbt = insert(rbt, FamilyNameList[Math.floor(Math.random() * FamilyNameList.length)], MenNameList[FamilyNameList.length / 2]);
 } else {
-    rbt = insert(rbt, FamilyNameList[Math.floor(Math.random() * nodeNumber)], WomenNameList[nodeNumber / 2]);
+    rbt = insert(rbt, FamilyNameList[Math.floor(Math.random() * FamilyNameList.length)], WomenNameList[FamilyNameList.length / 2]);
 }
 
 insertNullatAllNode(rbt);

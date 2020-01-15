@@ -83,6 +83,21 @@
 
 図を見てクラス定義を類推してもらう
         ・これも具体例をもう少し考えてみる
+        リスト？n分木？入れ子構造のようなもの？
+        ⇒環境(environment)について類推してもらうのはどうか
+        Kanonオリジナルのレイアウトと比較して、どちらを使ってみたいかアンケートを取る
+        例）
+            class Environment {
+                Var: string;
+                Val: number | boolean | procedure;
+                Env: Environment;
+
+                constructor(Var: string, Val: number | boolean | procedure) {
+                    this.Var = Var;
+                    this.Val = Val;
+                    this.Env = null;
+                }
+            }
 
 
 印刷について

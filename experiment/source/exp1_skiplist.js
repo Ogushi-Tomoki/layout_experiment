@@ -254,4 +254,4 @@ function makeSkipList(num){
     SkipListArray.length = 0;
 }
 
-makeSkipList(10);
+makeSkipList(7);

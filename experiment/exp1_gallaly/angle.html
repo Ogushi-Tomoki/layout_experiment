@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="uft-8">
+    <title>皆の描いた図からエッジの平均角度を求めよう！</title>
+</head>
+<body>
+    <form name="myform" action="#">
+        <p>
+            <input type="file" name="myfile" accept="image/jpeg">
+            
+        </p>
+    </form>
+    <select id="edges">
+        <option value="edge1">ピンク</option>
+        <option value="edge2">黄緑</option>
+        <option value="edge3">水色</option>
+        <option value="edge4">オレンジ</option>
+        <option value="edge5">グレー</option>
+        <option value="edge6">黄色</option>
+        <option value="edge7">紫</option>
+        <option value="edge8">赤</option>
+    </select>
+    <input type="button" value="角度計算" onclick="clickBtn()" />
+    <canvas id="canvas" width="1000" height="600"></canvas>
+    <script>
+        //Form要素を取得する
+        var form = document.forms.myform;
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        var img = new Image();
+
+        //ファイルが読み込まれた時の処理
+        form.myfile.addEventListener('change', function(e){
+            //読み込んだファイル情報を取得
+            var result = e.target.files[0];
+
+            //FileReaderのインスタンスを作成する
+            var reader = new FileReader();
+
+            //読み込んだファイルの中身を取得する
+            reader.readAsDataURL(result);
+
+            reader.addEventListener('load', function(){
+                //imageタグのsrc属性に画像ファイルの中身を当てはめる
+                img.src = reader.result;
+            })
+
+            // console.log(result);
+        })
+
+        img.onload = function(){
+            //var targetImg = document.getElementById('img');
+            var targetWidth = img.width;
+            var targetHeight = img.height;
+            var ConWidth = 1000;
+            var ConHeight = ConWidth * 0.6;
+            if(targetWidth/targetHeight >= ConWidth / ConHeight){
+                img.width = ConWidth;
+                img.height = targetHeight * ConWidth / targetWidth;
+            } else {
+                img.height = ConHeight;
+                img.width = targetWidth * ConHeight / targetHeight;
+            }
+            context.drawImage(img, 0, 0, img.width, img.height);
+            // console.log("width = " + img.width);
+            // console.log("height = " + img.height);
+        }
+
+        var startXs = new Array();
+        var startYs = new Array();
+        var endXs = new Array();
+        var endYs = new Array();
+        var edgeKinds = new Array();
+        var edgeAngles = new Array();
+        var edgeKN = 8;
+        var colorEdge = ["ピンク", "黄緑", "水色", "オレンジ", "グレー", "黄色", "紫", "赤"];
+
+        //マウスで線を引く
+        canvas.onmousedown = function(e){
+            var startX = e.layerX;
+            var startY = e.layerY;
+
+            startXs.push(startX);
+            startYs.push(startY);
+        }
+
+        canvas.onmouseup = function(e){
+            var endX = e.layerX;
+            var endY = e.layerY;
+
+            endXs.push(endX);
+            endYs.push(endY);
+
+            var str = document.getElementById("edges").value;
+            switch(str){
+                case "edge1":   //ピンク
+                    context.strokeStyle = "rgba(255, 96, 208, 0.8)";
+                    context.fillStyle = "rgba(255, 96, 208, 0.8)";
+                    break;
+                case "edge2":   //黄緑
+                    context.strokeStyle = "rgba(96, 200, 128, 0.8)";
+                    context.fillStyle = "rgba(96, 200, 128, 0.8)";
+                    break;
+                case "edge3":   //水色
+                    context.strokeStyle = "rgba(80, 208, 255, 0.8)";
+                    context.fillStyle = "rgba(80, 208, 255, 0.8)";
+                    break;
+                case "edge4":   //オレンジ
+                    context.strokeStyle = "rgba(255, 160, 16, 0.8)";
+                    context.fillStyle = "rgba(255, 160, 16, 0.8)";
+                    break;
+                case "edge5":   //グレー
+                    context.strokeStyle = "rgba(125, 125, 125, 0.8)";
+                    context.fillStyle = "rgba(125, 125, 125, 0.8)";
+                    break;
+                case "edge6":   //黄色
+                    context.strokeStyle = "rgba(200, 200, 20, 0.8)";
+                    context.fillStyle = "rgba(200, 200, 20, 0.8)";
+                    break;
+                case "edge7":   //紫
+                    context.strokeStyle = "rgba(128, 0, 128, 0.8)";
+                    context.fillStyle = "rgba(128, 0, 128, 0.8)";
+                    break;
+                case "edge8":   //赤
+                    context.strokeStyle = "rgba(255, 0, 0, 0.8)";
+                    context.fillStyle = "rgba(255, 0, 0, 0.8)";
+                    break;
+                default:
+                    context.strokeStyle = "rgba(0, 0, 0, 0.8)";
+                    context.fillStyle = "rgba(0, 0, 0, 0.8)";
+                    break;
+            }
+            edgeKinds.push(str);
+            
+            draw_vector(startXs[startXs.length - 1], startYs[startYs.length - 1], endXs[endXs.length - 1], endYs[endYs.length  - 1]);
+            var diffX = endXs[endXs.length - 1] - startXs[startXs.length - 1];
+            var diffY = endYs[endYs.length - 1] - startYs[startYs.length - 1];
+            var angle = Math.atan2(diffY, diffX) * 180 / Math.PI;
+            edgeAngles.push(angle);
+
+            // for(var i = 0; i < endXs.length; i++){
+            //     var diffX = endXs[i] - startXs[i];
+            //     var diffY = endYs[i] - startYs[i];
+
+            //     var angle = Math.atan2(diffY, diffX) * 180 / Math.PI;
+            //     console.log(i + "番目のエッジの傾き = " + angle + "°");
+            // }
+        }
+
+        function draw_vector(x, y, ex, ey){
+            var dx = ex - x;
+            var dy = ey - y;
+            var x1 = x;
+            var y1 = y;
+            var x2 = ex;
+            var y2 = ey;
+            var x3 = x2 + (-dx-dy)/12;
+            var y3 = y2 + (dx-dy)/12;
+            var x4 = x2 + (-dx+dy)/12;
+            var y4 = y2 + (-dx-dy)/12;
+
+            context.beginPath();
+            context.moveTo(x1, y1);
+            context.lineTo(x2, y2);
+            context.stroke();
+
+            context.beginPath();
+            context.moveTo(x2, y2);
+            context.lineTo(x3, y3);
+            context.lineTo(x4, y4);
+            context.closePath();
+            context.fill();
+        }
+
+        function clickBtn(){
+            var angleSum = new Array(edgeKN);
+            var kindNumber = new Array(edgeKN);
+            var angleVar = new Array(edgeKN);
+            for(var i = 0; i < edgeKN; i++){
+                angleSum[i] = 0;
+                kindNumber[i] = 0;
+                angleVar[i] = 0;
+            }
+            for(var i = 0; i < edgeKinds.length; i++){
+                switch(edgeKinds[i]){
+                    case "edge1":
+                        angleSum[0] += edgeAngles[i];
+                        kindNumber[0]++;
+                        break;
+                    case "edge2":
+                        angleSum[1] += edgeAngles[i];
+                        kindNumber[1]++;
+                        break;
+                    case "edge3":
+                        angleSum[2] += edgeAngles[i];
+                        kindNumber[2]++;
+                        break;
+                    case "edge4":
+                        angleSum[3] += edgeAngles[i];
+                        kindNumber[3]++;
+                        break;
+                    case "edge5":
+                        angleSum[4] += edgeAngles[i];
+                        kindNumber[4]++;
+                        break;
+                    case "edge6":
+                        angleSum[5] += edgeAngles[i];
+                        kindNumber[5]++;
+                        break;
+                    case "edge7":
+                        angleSum[6] += edgeAngles[i];
+                        kindNumber[6]++;
+                        break;
+                    case "edge8":
+                        angleSum[7] += edgeAngles[i];
+                        kindNumber[7]++;
+                        break;
+                }
+            }
+
+            for(var i = 0; i < edgeKinds.length; i++){
+                switch(edgeKinds[i]){
+                    case "edge1":
+                        angleVar[0] += Math.pow(edgeAngles[i] - angleSum[0] / kindNumber[0], 2);
+                        break;
+                    case "edge2":
+                        angleVar[1] += Math.pow(edgeAngles[i] - angleSum[1] / kindNumber[1], 2);
+                        break;
+                    case "edge3":
+                        angleVar[2] += Math.pow(edgeAngles[i] - angleSum[2] / kindNumber[2], 2);
+                        break;
+                    case "edge4":
+                        angleVar[3] += Math.pow(edgeAngles[i] - angleSum[3] / kindNumber[3], 2);
+                        break;
+                    case "edge5":
+                        angleVar[4] += Math.pow(edgeAngles[i] - angleSum[4] / kindNumber[4], 2);
+                        break;
+                    case "edge6":
+                        angleVar[5] += Math.pow(edgeAngles[i] - angleSum[5] / kindNumber[5], 2);
+                        break;
+                    case "edge7":
+                        angleVar[6] += Math.pow(edgeAngles[i] - angleSum[6] / kindNumber[6], 2);
+                        break;
+                    case "edge8":
+                        angleVar[7] += Math.pow(edgeAngles[i] - angleSum[7] / kindNumber[7], 2);
+                        break;
+                }
+            }
+
+            for(var i = 0; i < edgeKN; i++){
+                console.log("edge" + (i + 1) + "の本数：" + kindNumber[i] + "（" + colorEdge[i] + "）");
+                console.log("edge" + (i + 1) + "の平均角度は " + (angleSum[i] / kindNumber[i]) + "°");
+                console.log("edge" + (i + 1) + "の分散は " + (angleVar[i] / kindNumber[i]));
+                console.log("");
+            }
+        }
+    </script>
+</body>
+</html>
